@@ -1,54 +1,29 @@
-const changeListenersPropertyName = '__change-listeners__';
+import { listenerWrapperName } from "./change-listeners";
 
-export const setChangeListener = ( object, id, callback ) => {
-  /*
-    callback: ( object, property, oldValue, newValue, root ) => ...
-    Parameters:
-      object: object being changed
-      property: relative property path
-      oldValue: previous property value
-      newValue: new property value
-      root: root property path
-  */
-  if ( object[ changeListenersPropertyName ] == null || object.propertyIsEnumerable( changeListenersPropertyName ) || ( typeof object[ changeListenersPropertyName ] !== 'object' && !Array.isArray( object[ changeListenersPropertyName ] ) ) ){
-    Object.defineProperty( object, changeListenersPropertyName, {
-      value: {},
-      writable: false,
-      enumerable: false,
-      configurable: false
-    } );
-  }
-  if ( typeof callback === 'function' ) object[ changeListenersPropertyName ][ id ] = callback;
-};
+// Determines if value is a non-null object
+export const isObject = value => typeof value === 'object' && value !== null;
 
-export const deleteChangeListener = ( object, id ) => delete object?.[ changeListenersPropertyName ]?.[ id ];
-
-//const merge = ( source, target ) => {
-//  Object.keys( source ).forEach( key => {
-//    if ( source[ key ] != null && typeof source[ key ] === 'object' ) merge( source[ key ], target[ key ] );
-//    else target[ key ] = source[ key ];
-//  } );
-//  return target;
-//};
-
+// Merges 'source' into 'target' and returns target
 export const merge = ( source, target ) => {
   const mergeCallback = ( source, path ) => {
-    Object.keys( source ).forEach( key => {
+    for ( const key in source ){
       if ( source[ key ] != null && typeof source[ key ] === 'object' ){
         target[ key ] = Array.isArray( source[ key ] ) ? [] : {};
         mergeCallback( source[ key ], [ ...path, key ] );
       } else setProperty( target, [ ...path, key ].join( '.' ), source[ key ] );
-    } );
+    }
   };
-  mergeCallback( source, '' );
+  if ( isObject( target ) && isObject( source ) ) mergeCallback( source, '' );
   return target;
 };
 
-export const getProperty = ( object, property ) => property.split( '.' ).reduce( ( obj, key ) => obj?.[ key ], object );
+// Gets a property value
+export const getProperty = ( object, property ) => typeof property === 'string' && property.split( '.' ).reduce( ( obj, key ) => obj?.[ key ], object );
 
+// Sets a property value
 export const setProperty = ( object, property, value, callbacks = [] ) => !!object && property.split( '.' ).forEach( ( key, i, path ) => {
   const currentObject = object;
-  const changeListeners = object[ changeListenersPropertyName ];
+  const changeListeners = object[ listenerWrapperName ];
   if ( typeof changeListeners === 'object' ) callbacks.splice( 0, 0, ( oldValue, newValue ) => Object.values( changeListeners ).forEach( listener => typeof listener === 'function' && listener( currentObject, path.slice( i ).join( '.' ), oldValue, newValue, path.slice( 0, i ).join( '.' ) ) ) );
   if ( i < path.length - 1 ){
     if ( object[ key ] == null || typeof object[ key ] !== 'object' ){
@@ -67,9 +42,10 @@ export const setProperty = ( object, property, value, callbacks = [] ) => !!obje
   }
 } );
 
+// Deletes a property
 export const deleteProperty = ( object, property, callbacks = [] ) => !!object && property.split( '.' ).every( ( key, i, path ) => {
   const currentObject = object;
-  const changeListeners = object[ changeListenersPropertyName ];
+  const changeListeners = object[ listenerWrapperName ];
   if ( typeof changeListeners === 'object' ) callbacks.splice( 0, 0, ( oldValue, newValue ) => Object.values( changeListeners ).forEach( listener => typeof listener === 'function' && listener( currentObject, path.slice( i ).join( '.' ), oldValue, newValue, path.slice( 0, i ).join( '.' ) ) ) );
   if ( i < path.length - 1 ){
     if ( object[ key ] == null || typeof object[ key ] !== 'object' ){
