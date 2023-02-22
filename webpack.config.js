@@ -8,7 +8,7 @@ module.exports = {
     filename: 'hwt.js',
     library: {
       name: 'HWT',  // Library namespace
-      type: 'umd'
+      type: 'umd'   // Universal Module Definition
     }
   },
   module: {
