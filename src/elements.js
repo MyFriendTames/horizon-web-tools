@@ -1,4 +1,4 @@
-import { merge } from './objects/objects.js';
+import { isObject, merge } from './objects/objects.js';
 
 export const isElement = element => element instanceof Element;
 
@@ -17,8 +17,8 @@ export const createElement = ( tag, { innerHTML, children, listeners, initialize
 };
 
 export const mergeStyle = ( target, style ) => {
-  if ( isElement( target ) )
-  for ( const key in ( style && typeof style === 'object' ) ){
+  if ( isElement( target ) && isObject( style ) )
+  for ( const key in style ){
     if ( style[ key ] ) target.style.setProperty( key, style[ key ] );
   }
   return target;
