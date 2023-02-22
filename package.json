@@ -1,6 +1,8 @@
 {
   "name": "horizon-web-tools",
   "version": "1.0.0",
+  "author": "Diego Tames Vargas",
+  "license": "ISC",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,8 +13,6 @@
     "type": "git",
     "url": "git+https://MyFriendTames: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@github.com/MyFriendTames/horizon-web-tools.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/MyFriendTames/horizon-web-tools/issues"
   },
