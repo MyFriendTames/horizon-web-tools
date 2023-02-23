@@ -1,4 +1,4 @@
-import { isObject, merge } from '../objects/objects.js';
+import { isObject, merge } from './objects';
 
 export const isElement = element => element instanceof Element;
 

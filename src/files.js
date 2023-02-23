@@ -1,4 +1,4 @@
-import { createElement } from './elements';
+import { createElement } from './elements.js';
 
 // Returns everything after the last '/' character
 export const getFileName = filePath => typeof filePath === 'string' ? filePath.substring( filePath.search( /[^\/\\]+$/ ) ) : '';
