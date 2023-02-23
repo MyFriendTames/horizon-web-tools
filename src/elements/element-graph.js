@@ -21,8 +21,7 @@ export function ElementGraph( root ){
     };
     this.appendTo = function( parent, ...elements ){
       const ID = parent.getAttribute( graphIDAttributeName );
-      const graph = getProperty( ID )?.children;
-      console.log( graph );
+      const graph = getProperty( this.graph, ID )?.children;
       buildGraph( graph, elements, ID.replace( /\.?\d+$/ ) );
     }
     buildGraph( this.graph, root.children );
