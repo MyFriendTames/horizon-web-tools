@@ -3,7 +3,7 @@ import { getProperty } from '../objects';
 
 export const graphIDAttributeName = 'data-hwt-graph-index';
 
-function ElementGraph( root ){
+export function ElementGraph( root ){
   if ( isElement( root ) ){
     this.root = root;
     this.graph = [];
