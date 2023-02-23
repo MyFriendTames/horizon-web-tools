@@ -1,4 +1,5 @@
-import { isElement, getProperty } from './elements.js';
+import { isElement } from './elements.js';
+import { getProperty } from '../objects';
 
 export const graphIDAttributeName = 'data-hwt-graph-index';
 
