@@ -2,7 +2,7 @@ import { isObject, merge } from './objects';
 
 export const isElement = element => element instanceof Element;
 
-export const createElement = ( tag, { innerHTML, children, listeners, initialize, style, ...properties } ) => {
+export const createElement = ( tag, { innerHTML, children, listeners, initialize, style, attributes, ...properties } ) => {
   const element = document.createElement( tag );
   mergeStyle( element, style );
   if ( typeof innerHTML === 'string' ) element.innerHTML = innerHTML;
@@ -11,7 +11,12 @@ export const createElement = ( tag, { innerHTML, children, listeners, initialize
     if ( typeof listeners[ key ] === 'function' ) element.addEventListener( key, listeners[ key ] );
     else if ( typeof listeners[ key ]?.listener === 'function' ) element.addEventListener( key, listeners[ key ].listener, listeners[ key ].useCapture );
   }
-  if ( typeof properties === 'object' ) merge( properties, element );
+  if ( isObject( attributes ) ){
+    for ( const key in attributes ){
+      element.setAttribute( key, attributes[ key ] );
+    }
+  }
+  if ( isObject( properties ) ) merge( properties, element );
   if ( typeof initialize === 'function' ) initialize( element );
   return element;
 };
